@@ -1,0 +1,22 @@
+---
+- hosts: webservers
+  become: yes
+  tasks:
+    - name: Install apache2 package
+      apt: name=apache2 update_cache=yes state=latest
+    - name: Enable Mod Rewrite
+      apache2_module: name=rewrite state=present
+
+    - name: Restart Service
+      service: name=apache2 state=restarted
+
+    - name: Code Deployment
+      file:
+        path: /var/www/html
+        state: absent
+
+    - name: Code Deployment
+      git:
+        repo: https://github.com/schoolofdevops/html-sample-app.git
+        dest: /var/www/html
+        version: master
